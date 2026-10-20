@@ -1,45 +1,68 @@
 {
   "expo": {
-    "name": "MyCloset",
-    "slug": "MyCloset",
+    "name": "FitChecked",
+    "slug": "fitchecked",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "myapp",
+    "icon": "./assets/icon.png",
+    "scheme": "fitchecked",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": false
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#F2EFE8",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
     },
     "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router",
+      "expo-status-bar",
+      "expo-font",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/splash-icon.png",
+          "imageWidth": 160,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#f2efe8",
+          "dark": { "backgroundColor": "#1a1d18" }
+        }
+      ],
+      "expo-image",
+      "expo-sharing",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "FitChecked uses the camera to photograph the clothes you add to your closet."
         }
       ],
       [
         "expo-image-picker",
         {
-          "photosPermission": "The app accesses your photos to let you share them with your friends.",
-          "cameraPermission": "The app accesses your camera to let you take photos of your clothes."
+          "photosPermission": "FitChecked uses your photos so you can add clothes you've already photographed."
         }
-      ]
+      ],
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Your location is used to show local weather for outfit suggestions."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "savePhotosPermission": "FitChecked saves outfit images you choose to share to your photo library."
+        }
+      ],
+      "expo-notifications"
     ],
     "experiments": {
       "typedRoutes": true
