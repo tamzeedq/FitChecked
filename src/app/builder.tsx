@@ -130,7 +130,7 @@ export default function Builder() {
             placeholder="Add a note (optional)"
             placeholderTextColor={t.muted}
             multiline
-            style={{ flex: 1, fontSize: 15, fontFamily: family[400], color: t.ink, paddingVertical: 14 }}
+            style={{ flex: 1, fontSize: 15, lineHeight: 20, fontFamily: family[400], color: t.ink, paddingTop: 18, paddingBottom: 18, textAlignVertical: 'center' }}
           />
         </Card>
 

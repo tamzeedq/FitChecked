@@ -1,5 +1,5 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ScrollView, View } from 'react-native';
 
 import { Screen } from '@/components/Chrome';
@@ -33,13 +33,16 @@ export default function Calendar() {
   const [cursor, setCursor] = useState(() => fromKey(params.day ?? tKey));
   const [panelH, setPanelH] = useState(180);
 
-  useEffect(() => {
+  // Follow new route params (e.g. a day tapped on Home) without an effect.
+  const [seen, setSeen] = useState(`${params.day}|${params.week}`);
+  if (seen !== `${params.day}|${params.week}`) {
+    setSeen(`${params.day}|${params.week}`);
     if (params.day) {
       setSelected(params.day);
       setCursor(fromKey(params.day));
     }
     if (params.week) setWeek(params.week === '1');
-  }, [params.day, params.week]);
+  }
 
   const year = cursor.getFullYear();
   const month = cursor.getMonth();
@@ -149,7 +152,7 @@ export default function Calendar() {
                           <Thumb item={firstPiece(logs[0])} size={26} />
                         </View>
                       </View>
-                      <View style={{ position: 'absolute', top: 2, right: 3, minWidth: 15, height: 15, borderRadius: 8, backgroundColor: t.accent, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 }}>
+                      <View style={{ position: 'absolute', top: 2, right: 1, minWidth: 14, height: 14, borderRadius: 7, backgroundColor: t.accent, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 3 }}>
                         <Txt size={9.5} weight={700} color={t.onAccent}>
                           {logs.length}
                         </Txt>

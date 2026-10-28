@@ -37,7 +37,7 @@ export default function UploadFailed() {
       <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
         <IconCircle name="cloud_off" size={40} color={t.danger} />
         <View style={{ flex: 1, gap: 4 }}>
-          <H2>Couldn't remove the background</H2>
+          <H2>{"Couldn't remove the background"}</H2>
           <Txt size={14} lh={1.45} color={t.muted}>
             The connection dropped while processing. Your photo is saved on this phone, so nothing is lost.
           </Txt>

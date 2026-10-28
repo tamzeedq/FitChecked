@@ -1,6 +1,6 @@
 import { Image } from 'expo-image';
 import { useLocalSearchParams, router } from 'expo-router';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActivityIndicator, Animated, Easing, View } from 'react-native';
 
 import { CaptureFrame } from '@/components/CaptureFrame';
@@ -19,7 +19,7 @@ export default function Processing() {
   const capture = useStore((s) => s.capture);
   const setCapture = useStore((s) => s.setCapture);
   const [phase, setPhase] = useState<0 | 1 | 2>(0);
-  const scan = useRef(new Animated.Value(0)).current;
+  const [scan] = useState(() => new Animated.Value(0));
   const [h, setH] = useState(320);
 
   useEffect(() => {

@@ -6,23 +6,24 @@
     "@expo-google-fonts/plus-jakarta-sans": "^0.4.2",
     "@expo/vector-icons": "^15.0.2",
     "@react-native-async-storage/async-storage": "2.2.0",
-    "expo": "~58.0.16",
-    "expo-camera": "~58.0.11",
-    "expo-clipboard": "~58.0.3",
+    "expo": "~58.0.20",
+    "expo-camera": "~58.0.13",
+    "expo-clipboard": "~58.0.4",
     "expo-constants": "~58.0.12",
+    "expo-dev-client": "~58.0.16",
     "expo-file-system": "~58.0.10",
     "expo-font": "~58.0.9",
-    "expo-image": "~58.0.16",
+    "expo-image": "~58.0.17",
     "expo-image-picker": "~58.0.10",
     "expo-linear-gradient": "~58.0.3",
-    "expo-linking": "~58.0.13",
-    "expo-location": "~58.0.18",
-    "expo-media-library": "~58.0.11",
-    "expo-notifications": "~58.1.5",
-    "expo-router": "~58.0.24",
-    "expo-sharing": "~58.0.19",
-    "expo-splash-screen": "~58.0.10",
-    "expo-status-bar": "~58.0.3",
+    "expo-linking": "~58.0.14",
+    "expo-location": "~58.0.19",
+    "expo-media-library": "~58.0.12",
+    "expo-notifications": "~58.1.6",
+    "expo-router": "~58.0.27",
+    "expo-sharing": "~58.0.20",
+    "expo-splash-screen": "~58.0.11",
+    "expo-status-bar": "~58.0.4",
     "expo-system-ui": "~58.0.6",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -36,6 +37,8 @@
   },
   "devDependencies": {
     "@types/react": "~19.3.0",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~58.0.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
@@ -46,5 +49,8 @@
     "typecheck": "tsc --noEmit",
     "lint": "expo lint"
   },
-  "private": true
+  "private": true,
+  "engines": {
+    "node": ">=22.13"
+  }
 }

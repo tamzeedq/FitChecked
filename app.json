@@ -8,7 +8,8 @@
     "scheme": "fitchecked",
     "userInterfaceStyle": "automatic",
     "ios": {
-      "supportsTablet": false
+      "supportsTablet": false,
+      "bundleIdentifier": "com.tamzeedq.fitchecked"
     },
     "android": {
       "adaptiveIcon": {
@@ -17,7 +18,8 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.tamzeedq.fitchecked"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -33,7 +35,9 @@
           "imageWidth": 160,
           "resizeMode": "contain",
           "backgroundColor": "#f2efe8",
-          "dark": { "backgroundColor": "#1a1d18" }
+          "dark": {
+            "backgroundColor": "#1a1d18"
+          }
         }
       ],
       "expo-image",

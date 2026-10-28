@@ -2,7 +2,7 @@ import * as Clipboard from 'expo-clipboard';
 import * as Linking from 'expo-linking';
 import { Asset, requestPermissionsAsync } from 'expo-media-library';
 import * as Sharing from 'expo-sharing';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { Alert, Platform, Share, View } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
@@ -14,13 +14,14 @@ import { Card, Icon, Press, Toggle, Txt, type IconName } from './ui';
 
 export function ShareSheet({ outfit, items, visible, onClose }: { outfit: Outfit; items: Item[]; visible: boolean; onClose: () => void }) {
   const t = useTheme();
-  const shot = useRef<React.ComponentRef<typeof View>>(null);
+  // Callback ref in state so the capture target isn't read from a ref during render.
+  const [shot, setShot] = useState<React.ComponentRef<typeof View> | null>(null);
   const [names, setNames] = useState(true);
   const [copied, setCopied] = useState(false);
   const link = Linking.createURL(`/outfit/${outfit.id}`);
   const text = `${outfit.name}${names ? ` — ${items.map((x) => x.name).join(', ')}` : ''}`;
 
-  const snapshot = () => captureRef(shot, { format: 'png', quality: 1, result: Platform.OS === 'web' ? 'data-uri' : 'tmpfile' });
+  const snapshot = () => captureRef(shot!, { format: 'png', quality: 1, result: Platform.OS === 'web' ? 'data-uri' : 'tmpfile' });
 
   const close = () => {
     setCopied(false);
@@ -81,7 +82,7 @@ export function ShareSheet({ outfit, items, visible, onClose }: { outfit: Outfit
           </Press>
         </View>
 
-        <View ref={shot} collapsable={false} style={{ alignSelf: 'center', width: 220, padding: 12, gap: 10, backgroundColor: t.surface, borderRadius: radius.card, boxShadow: t.cardShadow }}>
+        <View ref={setShot} collapsable={false} style={{ alignSelf: 'center', width: 220, padding: 12, gap: 10, backgroundColor: t.surface, borderRadius: radius.card, boxShadow: t.cardShadow }}>
           <HeroCollage items={items} height={170} gap={5} r={radius.small} />
           <View style={{ gap: 2, paddingHorizontal: 2 }}>
             <Txt size={15} weight={700}>
