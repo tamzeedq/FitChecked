@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { AppState, Platform } from 'react-native';
 import { create } from 'zustand';
 
+import { flushPending, startSync } from '@/data/sync';
 import { supabase, supabaseConfigured } from './supabase';
 
 type Result = { error: string | null; needsConfirmation?: boolean };
@@ -63,6 +64,8 @@ export const useAuth = create<AuthState>((set) => ({
     }
   },
   signOut: async () => {
+    // Push unsynced changes while the session is still valid; local data is cleared once the user is gone.
+    await flushPending();
     // Local scope always clears the stored session, even offline.
     await supabase.auth.signOut({ scope: 'local' }).catch(() => {});
     set({ session: null, user: null });
@@ -94,6 +97,7 @@ export const useAuth = create<AuthState>((set) => ({
 export function useAuthListener() {
   useEffect(() => {
     let active = true;
+    const stopSync = startSync(useAuth);
     supabase.auth
       .getSession()
       .then(({ data }) => {
@@ -117,6 +121,7 @@ export function useAuthListener() {
     }
     return () => {
       active = false;
+      stopSync();
       sub.subscription.unsubscribe();
       appState?.remove();
       if (Platform.OS !== 'web') supabase.auth.stopAutoRefresh();
