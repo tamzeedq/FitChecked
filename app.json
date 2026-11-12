@@ -66,7 +66,8 @@
           "savePhotosPermission": "FitChecked saves outfit images you choose to share to your photo library."
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
