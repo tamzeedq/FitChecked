@@ -6,6 +6,13 @@ import { useStore } from '@/data/store';
 
 const ID = 'morning-suggestion';
 
+// Registered once at import (the root layout imports this module at startup) so reminders also show in the foreground.
+if (Platform.OS !== 'web') {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({ shouldShowBanner: true, shouldShowList: true, shouldPlaySound: false, shouldSetBadge: false }),
+  });
+}
+
 /** Keeps the daily "morning suggestion" reminder in sync with Settings. */
 export function useMorningReminder() {
   const on = useStore((s) => s.settings.morningSuggestion);
