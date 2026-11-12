@@ -1,6 +1,6 @@
 # FitChecked
 
-FitChecked is a local-first wardrobe app. You photograph your clothes, build and tag outfits, get weather-aware daily suggestions, and log what you wore on a calendar. Everything is stored on the device. There is no account and no backend.
+FitChecked is a local-first wardrobe app. You photograph your clothes, build and tag outfits, get weather-aware daily suggestions, and log what you wore on a calendar. Closet data is stored on the device. Accounts use Supabase Auth; data sync is not built yet.
 
 The UI is built from the "Linen" design handoff: Plus Jakarta Sans, a sage/linen palette, and light and dark themes.
 
@@ -25,6 +25,15 @@ To make a development build:
 npx expo run:ios
 npx expo run:android
 ```
+
+### Accounts (Supabase)
+
+Sign-in uses Supabase Auth. Copy `.env.example` to `.env.local` (git-ignored) and set:
+
+- `EXPO_PUBLIC_SUPABASE_URL`: your project URL
+- `EXPO_PUBLIC_SUPABASE_ANON_KEY`: the anon (public) key. Never put the service-role key in the app.
+
+Restart `expo start` after changing them. Without them the app boots but sign-in shows "not configured".
 
 ### Optional: background removal
 
