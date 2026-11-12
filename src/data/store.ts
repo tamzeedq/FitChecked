@@ -5,13 +5,14 @@ import { createJSONStorage, persist } from 'zustand/middleware';
 
 import { dateKey, todayKey } from '@/lib/dates';
 import { buildSampleCloset, DEFAULT_TAG_GROUPS } from './sample';
+import { newId, type PhotoMeta, type Snapshot } from './syncRemote';
 import type { Category, ColorName, Item, Outfit, Settings, TagGroup, TagGroupName, WearLog } from './types';
 
 export const UNDO_WINDOW_MS = 5000;
 
 const TILE_HUES = [30, 80, 220, 250, 90, 60, 200, 150, 40, 120, 300, 180];
 
-const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const uid = newId;
 
 export type NewItem = {
   name: string;
@@ -47,6 +48,8 @@ type State = {
   tagGroups: TagGroup[];
   settings: Settings;
   recentSearches: string[];
+  /** Storage objects behind each item's photos (cloud sync bookkeeping). */
+  photoMeta: PhotoMeta;
   /** Item waiting out its undo window. */
   pendingDelete: string | null;
 
@@ -87,6 +90,13 @@ type Actions = {
   setCapture: (c: Capture | null) => void;
   dismissRec: (outfitId: string) => void;
   resetDismissed: () => void;
+
+  /** Cloud sync: replace user data with what the server holds. */
+  applyRemote: (snap: Snapshot) => void;
+  /** Cloud sync: record photo storage paths / swap in a cached uri without marking anything changed. */
+  setPhotoMeta: (id: string, meta: PhotoMeta[string] | null) => void;
+  /** Cloud sync: drop everything belonging to the signed-out account. */
+  resetUserData: () => void;
 };
 
 const emptyDraft = (): OutfitDraft => ({ name: '', tags: [], itemIds: [], note: '' });
@@ -108,22 +118,27 @@ function bumpWear<T extends { id: string; wearCount: number; lastWorn?: string }
   );
 }
 
+const initialUserData = () => ({
+  onboarded: false,
+  profileName: '',
+  memberSince: todayKey(),
+  items: [] as Item[],
+  outfits: [] as Outfit[],
+  log: {} as WearLog,
+  tagGroups: DEFAULT_TAG_GROUPS,
+  settings: defaultSettings,
+  recentSearches: [] as string[],
+  photoMeta: {} as PhotoMeta,
+  pendingDelete: null,
+  draft: emptyDraft(),
+  capture: null,
+  dismissedRecs: { date: todayKey(), ids: [] as string[] },
+});
+
 export const useStore = create<State & Actions>()(
   persist(
     (set, get) => ({
-      onboarded: false,
-      profileName: '',
-      memberSince: todayKey(),
-      items: [],
-      outfits: [],
-      log: {},
-      tagGroups: DEFAULT_TAG_GROUPS,
-      settings: defaultSettings,
-      recentSearches: [],
-      pendingDelete: null,
-      draft: emptyDraft(),
-      capture: null,
-      dismissedRecs: { date: todayKey(), ids: [] },
+      ...initialUserData(),
 
       completeOnboarding: () => set({ onboarded: true }),
       loadSampleCloset: () => {
@@ -253,6 +268,28 @@ export const useStore = create<State & Actions>()(
         set((s) => ({ dismissedRecs: { date: today, ids: s.dismissedRecs.date === today ? [...s.dismissedRecs.ids, outfitId] : [outfitId] } }));
       },
       resetDismissed: () => set({ dismissedRecs: { date: todayKey(), ids: [] } }),
+
+      applyRemote: (snap) =>
+        set((s) => ({
+          items: snap.items,
+          outfits: snap.outfits,
+          log: snap.log,
+          tagGroups: snap.tagGroups,
+          settings: snap.settings,
+          profileName: snap.profileName,
+          memberSince: snap.memberSince || s.memberSince,
+          onboarded: snap.onboarded,
+          photoMeta: snap.photoMeta,
+          pendingDelete: null,
+        })),
+      setPhotoMeta: (id, meta) =>
+        set((s) => {
+          const photoMeta = { ...s.photoMeta };
+          if (meta) photoMeta[id] = meta;
+          else delete photoMeta[id];
+          return { photoMeta };
+        }),
+      resetUserData: () => set(initialUserData()),
     }),
     {
       name: 'fitchecked',
