@@ -6,6 +6,7 @@ import { Dialog, Scroll, Screen } from '@/components/Chrome';
 import { Button, Card, H1, H2, Icon, Label, Press, Row, Segmented, Toggle, Txt, type IconName } from '@/components/ui';
 import { useItems, useOutfits, useStore } from '@/data/store';
 import type { Appearance } from '@/data/types';
+import { useAuth } from '@/lib/auth';
 import { fromKey, monthName } from '@/lib/dates';
 import { radius, useTheme } from '@/theme';
 import { family } from '@/theme/fonts';
@@ -29,6 +30,8 @@ export default function Profile() {
   const name = useStore((s) => s.profileName);
   const since = useStore((s) => s.memberSince);
   const setName = useStore((s) => s.setProfileName);
+  const email = useAuth((s) => s.user?.email);
+  const signOut = useAuth((s) => s.signOut);
   const [editing, setEditing] = useState(false);
   const [draftName, setDraftName] = useState(name);
 
@@ -66,6 +69,13 @@ export default function Profile() {
       [
         { icon: 'sell', l: 'Tags', v: String(tagCount), onPress: () => router.push('/tags') },
         { icon: 'category', l: 'Categories', v: '5' },
+      ],
+    ],
+    [
+      'Account',
+      [
+        { icon: 'person', l: 'Signed in as', v: email ?? '' },
+        { icon: 'logout', l: 'Sign out', onPress: () => void signOut() },
       ],
     ],
     ['Appearance', [{ icon: 'contrast', l: 'Theme', seg: true }]],
