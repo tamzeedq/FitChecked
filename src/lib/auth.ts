@@ -1,4 +1,5 @@
 import type { Session, User } from '@supabase/supabase-js';
+import * as Linking from 'expo-linking';
 import { useEffect } from 'react';
 import { AppState, Platform } from 'react-native';
 import { create } from 'zustand';
@@ -16,6 +17,7 @@ type AuthState = {
   signUp: (email: string, password: string) => Promise<Result>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<Result>;
+  updatePassword: (password: string) => Promise<Result>;
 };
 
 export function friendlyError(message?: string): string {
@@ -68,7 +70,19 @@ export const useAuth = create<AuthState>((set) => ({
   resetPassword: async (email) => {
     if (!supabaseConfigured) return { error: NOT_CONFIGURED };
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email.trim());
+      // Native opens the app via its scheme; web returns to this origin. Both must be in Supabase's redirect allow-list.
+      const redirectTo = Platform.OS === 'web' ? `${window.location.origin}/reset-password` : Linking.createURL('/reset-password');
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), { redirectTo });
+      return { error: error ? friendlyError(error.message) : null };
+    } catch (e) {
+      return fail(e);
+    }
+  },
+  // Used on the recovery screen: the recovery link has already established a session.
+  updatePassword: async (password) => {
+    if (!supabaseConfigured) return { error: NOT_CONFIGURED };
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
       return { error: error ? friendlyError(error.message) : null };
     } catch (e) {
       return fail(e);

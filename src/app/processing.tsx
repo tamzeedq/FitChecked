@@ -35,7 +35,9 @@ export default function Processing() {
 
   useEffect(() => {
     if (!capture) {
-      router.back();
+      // Cold deep link with nothing to process: go back if we can, otherwise home.
+      if (router.canGoBack()) router.back();
+      else router.replace('/');
       return;
     }
     let live = true;
